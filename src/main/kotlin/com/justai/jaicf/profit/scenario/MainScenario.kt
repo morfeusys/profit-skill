@@ -4,11 +4,13 @@ import com.justai.jaicf.channel.yandexalice.AliceEvent
 import com.justai.jaicf.channel.yandexalice.AliceIntent
 import com.justai.jaicf.channel.yandexalice.activator.alice
 import com.justai.jaicf.channel.yandexalice.alice
+import com.justai.jaicf.channel.yandexalice.api.alice
 import com.justai.jaicf.model.scenario.Scenario
 import com.justai.jaicf.profit.Profit
 import com.justai.jaicf.profit.ProfitCalculator
 import com.justai.jaicf.profit.Stuff
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonLiteral
 import kotlinx.serialization.json.content
 import kotlinx.serialization.json.int
 
@@ -23,6 +25,25 @@ object MainScenario: Scenario() {
             action {
                 reactions.say("Я подскажу, какой товар выгоднее. " +
                         "Например спросите, что выгоднее - 250 грамм за 320 рублей или 320 грамм за 400.")
+            }
+        }
+
+        state("repeat") {
+            activators {
+                intent(AliceIntent.REPEAT)
+            }
+
+            action {
+                request.alice?.run {
+                    val reply = state?.user?.get("last_reply")
+                    if (reply == null) {
+                        reactions.say("А вы еще ничего не спращивали.")
+                        reactions.go("/main")
+                    } else {
+                        reactions.say(reply.primitive.content)
+                        reactions.alice?.endSession()
+                    }
+                }
             }
         }
 
@@ -60,13 +81,16 @@ object MainScenario: Scenario() {
                             else -> "Второй"
                         }
 
-                        reactions.say("$variant вариант выгоднее")
+                        var reply = "$variant вариант выгоднее "
 
-                        when {
-                            profit.percent < 10 -> reactions.say("всего лишь на ${profit.percent}%.")
-                            profit.percent < 100 -> reactions.say("на ${profit.percent}%.")
-                            else -> reactions.say("на целых ${profit.percent}%.")
+                        reply += when {
+                            profit.percent < 10 -> "всего лишь на ${profit.percent}%."
+                            profit.percent < 100 -> "на ${profit.percent}%."
+                            else -> "на целых ${profit.percent}%."
                         }
+
+                        reactions.alice?.updateUserState("last_reply", JsonLiteral(reply))
+                        reactions.say(reply)
                     }
                 }
             }
