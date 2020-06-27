@@ -37,7 +37,7 @@ object MainScenario: Scenario() {
                 request.alice?.run {
                     val reply = state?.user?.get("last_reply")
                     if (reply == null) {
-                        reactions.say("А вы еще ничего не спращивали.")
+                        reactions.say("А вы еще ничего не спрашивали.")
                         reactions.go("/main")
                     } else {
                         reactions.say(reply.primitive.content)

@@ -62,7 +62,8 @@ private val units = mapOf<String, Unit<*>>(
 
 fun main() {
     println(ProfitCalculator.calculateProfit(
-        Stuff(250, 320, "g"),
-        Stuff(320, 400, "g")
+        Stuff(1, 500, "kg"),
+        Stuff(550, 300, "g")
+
     ))
 }
