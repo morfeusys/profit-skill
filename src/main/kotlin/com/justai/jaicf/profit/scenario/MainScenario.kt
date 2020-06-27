@@ -5,6 +5,7 @@ import com.justai.jaicf.channel.yandexalice.AliceIntent
 import com.justai.jaicf.channel.yandexalice.activator.alice
 import com.justai.jaicf.channel.yandexalice.alice
 import com.justai.jaicf.model.scenario.Scenario
+import com.justai.jaicf.profit.Profit
 import com.justai.jaicf.profit.ProfitCalculator
 import com.justai.jaicf.profit.Stuff
 import kotlinx.serialization.json.JsonElement
@@ -41,7 +42,13 @@ object MainScenario: Scenario() {
 
                     val first = Stuff(firstAmount?.value?.int ?: 1, firstPrice!!.value.int, firstUnit!!.value.content)
                     val second = Stuff(secondAmount?.value?.int ?: 1, secondPrice!!.value.int, secondUnit!!.value.content)
-                    val profit = ProfitCalculator.calculateProfit(first, second)
+
+                    val profit = try {
+                        ProfitCalculator.calculateProfit(first, second)
+                    } catch (e: Exception) {
+                        reactions.say("Тут сосчитать не могу, извините. Попробуйте еще разок.")
+                        return@action
+                    }
 
                     reactions.alice?.endSession()
 
