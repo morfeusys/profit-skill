@@ -7,7 +7,7 @@ plugins {
 group = "com.justai.jaicf"
 version = "1.0.0"
 
-val jaicf = "0.4.3"
+val jaicf = "0.5.0"
 val slf4j = "1.7.30"
 val ktor = "1.3.1"
 
@@ -29,9 +29,9 @@ dependencies {
 
     implementation("com.justai.jaicf:core:$jaicf")
     implementation("com.justai.jaicf:yandex-alice:$jaicf")
-    implementation("com.justai.jaicf:mongo:$jaicf")
 
     implementation("io.ktor:ktor-server-netty:$ktor")
+    implementation("tec.units:unit-ri:1.0.3")
 }
 
 tasks {

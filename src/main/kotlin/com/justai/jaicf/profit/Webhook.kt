@@ -1,4 +1,4 @@
-package com.justai.jaicf.template
+package com.justai.jaicf.profit
 
 import com.justai.jaicf.channel.http.httpBotRouting
 import com.justai.jaicf.channel.yandexalice.AliceChannel
@@ -9,9 +9,7 @@ import io.ktor.server.netty.Netty
 fun main() {
     embeddedServer(Netty, System.getenv("PORT")?.toInt() ?: 8080) {
         routing {
-            httpBotRouting("/" to AliceChannel(
-                skill,
-                System.getenv("OAUTH_TOKEN") ?: "OR PLACE YOUR OATH TOKEN HERE"))
+            httpBotRouting("/" to AliceChannel(skill))
         }
     }.start(wait = true)
 }
