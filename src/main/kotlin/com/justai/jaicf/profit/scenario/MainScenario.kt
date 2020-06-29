@@ -73,7 +73,7 @@ object MainScenario: Scenario() {
 
                     reactions.alice?.endSession()
 
-                    if (profit == null) {
+                    if (profit == null || profit.percent == 0) {
                         reactions.say("Тут разницы в цене вообще нет.")
                     } else {
                         val variant = when {
