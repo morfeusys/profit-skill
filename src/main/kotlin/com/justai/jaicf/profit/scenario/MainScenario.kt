@@ -1,16 +1,12 @@
 package com.justai.jaicf.profit.scenario
 
-import com.justai.jaicf.channel.yandexalice.AliceEvent
-import com.justai.jaicf.channel.yandexalice.AliceIntent
+import com.justai.jaicf.channel.yandexalice.model.AliceEvent
+import com.justai.jaicf.channel.yandexalice.model.AliceIntent
 import com.justai.jaicf.channel.yandexalice.activator.alice
 import com.justai.jaicf.channel.yandexalice.alice
-import com.justai.jaicf.channel.yandexalice.api.alice
 import com.justai.jaicf.model.scenario.Scenario
-import com.justai.jaicf.profit.Profit
 import com.justai.jaicf.profit.ProfitCalculator
-import com.justai.jaicf.profit.Stuff
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonLiteral
+import com.justai.jaicf.profit.model.Product
 import kotlinx.serialization.json.content
 import kotlinx.serialization.json.int
 
@@ -34,15 +30,13 @@ object MainScenario: Scenario() {
             }
 
             action {
-                request.alice?.run {
-                    val reply = state?.user?.get("last_reply")
-                    if (reply == null) {
-                        reactions.say("А вы еще ничего не спрашивали.")
-                        reactions.go("/main")
-                    } else {
-                        reactions.say(reply.primitive.content)
-                        reactions.alice?.endSession()
-                    }
+                val reply = context.client["last_reply"] as? String
+                if (reply == null) {
+                    reactions.say("А вы еще ничего не спрашивали.")
+                    reactions.go("/main")
+                } else {
+                    reactions.say(reply)
+                    reactions.alice?.endSession()
                 }
             }
         }
@@ -61,36 +55,73 @@ object MainScenario: Scenario() {
                     val firstUnit = slots["first_unit"]
                     val secondUnit = slots["second_unit"] ?: firstUnit
 
-                    val first = Stuff(firstAmount?.value?.int ?: 1, firstPrice!!.value.int, firstUnit!!.value.content)
-                    val second = Stuff(secondAmount?.value?.int ?: 1, secondPrice!!.value.int, secondUnit!!.value.content)
-
-                    val profit = try {
-                        ProfitCalculator.calculateProfit(first, second)
-                    } catch (e: Exception) {
-                        reactions.say("Тут сосчитать не могу, извините. Попробуйте еще разок.")
-                        return@action
+                    context.session["first"] = Product(firstAmount?.value?.int ?: 1, firstPrice!!.value.int, firstUnit!!.value.content)
+                    context.session["second"] = secondPrice?.let {
+                        Product(secondAmount?.value?.int ?: 1, secondPrice.value.int, secondUnit!!.value.content)
                     }
 
-                    reactions.alice?.endSession()
+                    reactions.go("calculate")
+                }
+            }
 
-                    if (profit == null || profit.percent == 0) {
-                        reactions.say("Тут разницы в цене вообще нет.")
+            state("calculate") {
+                action {
+                    val first = context.session["first"] as? Product
+                    val second = context.session["second"] as? Product
+
+                    if (second == null) {
+                        reactions.say("А с чем сравнить?")
                     } else {
-                        val variant = when {
-                            profit.stuff === first -> "Первый"
-                            else -> "Второй"
+                        val profit = try {
+                            ProfitCalculator.calculateProfit(first!!, second)
+                        } catch (e: Exception) {
+                            reactions.say("Тут сосчитать не могу, извините. Попробуйте еще разок.")
+                            return@action
                         }
 
-                        var reply = "$variant вариант выгоднее "
+                        if (profit == null || profit.percent == 0) {
+                            reactions.say("Тут разницы в цене вообще нет.")
+                        } else {
+                            val variant = when {
+                                profit.product === first -> "Первый"
+                                else -> "Второй"
+                            }
 
-                        reply += when {
-                            profit.percent < 10 -> "всего лишь на ${profit.percent}%."
-                            profit.percent < 100 -> "на ${profit.percent}%."
-                            else -> "на целых ${profit.percent}%."
+                            var reply = "$variant вариант выгоднее "
+
+                            reply += when {
+                                profit.percent < 10 -> "всего лишь на ${profit.percent}%."
+                                profit.percent < 100 -> "на ${profit.percent}%."
+                                else -> "на целых ${profit.percent}%."
+                            }
+
+                            context.client["last_reply"] = reply
+                            reactions.say(reply)
+                            reactions.alice?.endSession()
                         }
+                    }
+                }
+            }
 
-                        reactions.alice?.updateUserState("last_reply", JsonLiteral(reply))
-                        reactions.say(reply)
+            state("second") {
+                activators {
+                    intent("SECOND.PRODUCT")
+                }
+
+                action {
+                    activator.alice?.run {
+                        val secondAmount = slots["second_amount"]
+                        val secondPrice = slots["second_price"]
+                        val secondUnit = slots["second_unit"]
+
+                        val first = context.session["first"] as Product
+                        context.session["second"] = Product(
+                            secondAmount?.value?.int ?: 1,
+                            secondPrice!!.value.int,
+                            secondUnit?.value?.content ?: first.unit
+                        )
+
+                        reactions.go("../calculate")
                     }
                 }
             }

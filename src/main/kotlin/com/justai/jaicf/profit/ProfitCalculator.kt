@@ -1,5 +1,7 @@
 package com.justai.jaicf.profit
 
+import com.justai.jaicf.profit.model.Profit
+import com.justai.jaicf.profit.model.Product
 import javax.measure.Unit
 
 import tec.units.ri.unit.Units.*
@@ -10,7 +12,21 @@ import kotlin.math.round
 
 object ProfitCalculator {
 
-    fun calculateProfit(first: Stuff, second: Stuff): Profit? {
+    private val units = mapOf<String, Unit<*>>(
+        "g" to GRAM,
+        "mg" to MILLI(GRAM),
+        "kg" to KILO(GRAM),
+        "m" to METRE,
+        "sm" to CENTI(METRE),
+        "mm" to MILLI(METRE),
+        "l" to LITRE,
+        "ml" to MILLI(LITRE),
+        "sec" to SECOND,
+        "min" to MINUTE,
+        "hour" to HOUR
+    )
+
+    fun calculateProfit(first: Product, second: Product): Profit? {
         val firstUnit = units[first.unit]
         val secondUnit = units[second.unit]
         var converted: Number = first.amount
@@ -33,37 +49,4 @@ object ProfitCalculator {
             Profit(percent, stuff)
         }
     }
-}
-
-data class Stuff(
-    val amount: Int,
-    val price: Int,
-    val unit: String
-)
-
-data class Profit(
-    val percent: Int,
-    val stuff: Stuff
-)
-
-private val units = mapOf<String, Unit<*>>(
-    "g" to GRAM,
-    "mg" to MILLI(GRAM),
-    "kg" to KILO(GRAM),
-    "m" to METRE,
-    "sm" to CENTI(METRE),
-    "mm" to MILLI(METRE),
-    "l" to LITRE,
-    "ml" to MILLI(LITRE),
-    "sec" to SECOND,
-    "min" to MINUTE,
-    "hour" to HOUR
-)
-
-fun main() {
-    println(ProfitCalculator.calculateProfit(
-        Stuff(1, 500, "kg"),
-        Stuff(550, 300, "g")
-
-    ))
 }

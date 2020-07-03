@@ -1,0 +1,36 @@
+root:
+    (или|либо)? $right
+
+filler:
+    отдать | купить | заплатить | приобрести | взять
+
+slots:
+    second_amount:
+        source: $Amount2
+        type: YANDEX.NUMBER
+    second_unit:
+        source: $Unit2
+        type: UnitName
+    second_price:
+        source: $Price2
+        type: YANDEX.NUMBER
+
+$right:
+    $Price2 $Currency? за $Amount2 $Unit2?
+    $Price2 $Currency? за $Amount2? $Unit2
+    $Amount2? $Unit2 (за|по) $Price2 $Currency?
+    $Amount2 $Unit2? (за|по) $Price2 $Currency
+
+$Amount2:
+    $YANDEX.NUMBER
+$Price2:
+    $YANDEX.NUMBER
+$Unit2:
+    %lemma
+    $UnitName
+$Currency:
+    %lemma
+    рубль
+    %exact
+    руб
+    р

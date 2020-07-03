@@ -9,7 +9,7 @@ import io.ktor.server.netty.Netty
 fun main() {
     embeddedServer(Netty, System.getenv("PORT")?.toInt() ?: 8080) {
         routing {
-            httpBotRouting("/" to AliceChannel(skill))
+            httpBotRouting("/" to AliceChannel(skill, useDataStorage = true))
         }
     }.start(wait = true)
 }
