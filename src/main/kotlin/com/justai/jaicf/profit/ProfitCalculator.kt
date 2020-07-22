@@ -36,8 +36,8 @@ object ProfitCalculator {
             converted = converter.convert(first.amount)
         }
 
-        val firstPrice = first.price.toDouble() / converted.toDouble()
-        val secondPrice = second.price.toDouble() / second.amount
+        val firstPrice = first.price / converted.toDouble()
+        val secondPrice = second.price / second.amount
 
         return if (firstPrice == secondPrice) {
             null
