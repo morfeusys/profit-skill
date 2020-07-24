@@ -3,7 +3,7 @@
 Навык помогает пользователю определять, какой товар в магазине выгоднее купить, основываясь на его цене и количестве.
 Написан с использованием [фреймворка JAICF](https://github.com/just-ai/jaicf-kotlin/tree/master/channels/yandex-alice) на языке [Kotlin](https://kotlinlang.org).
 
-<a href="https://dialogs.yandex.ru/store/skills/197727c0-chto-vygodne?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d2" target="_blank"><img alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term2.svg"/></a>
+<a href="https://dialogs.yandex.ru/store/skills/197727c0-chto-vygodne?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d1" target="_blank"><img alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term1.svg"/></a>
 
 ## Как использовать
 
