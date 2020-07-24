@@ -7,6 +7,7 @@ import com.justai.jaicf.channel.yandexalice.alice
 import com.justai.jaicf.model.scenario.Scenario
 import com.justai.jaicf.profit.ProfitCalculator
 import com.justai.jaicf.profit.model.Product
+import com.justai.jaicf.profit.model.toAmount
 import kotlinx.serialization.json.content
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.float
@@ -57,9 +58,9 @@ object MainScenario: Scenario() {
                     val firstUnit = slots["first_unit"]
                     val secondUnit = slots["second_unit"] ?: firstUnit
 
-                    context.session["first"] = Product(firstAmount?.value?.double ?: 1.0, firstPrice!!.value.int, firstUnit!!.value.content)
+                    context.session["first"] = Product(firstAmount?.value?.toAmount() ?: 1.0, firstPrice!!.value.int, firstUnit?.value?.content ?: "")
                     context.session["second"] = secondPrice?.let {
-                        Product(secondAmount?.value?.double ?: 1.0, secondPrice.value.int, secondUnit!!.value.content)
+                        Product(secondAmount?.value?.toAmount() ?: 1.0, secondPrice.value.int, secondUnit?.value?.content ?: "")
                     }
 
                     reactions.go("calculate")
@@ -118,7 +119,7 @@ object MainScenario: Scenario() {
 
                         val first = context.session["first"] as Product
                         context.session["second"] = Product(
-                            secondAmount?.value?.double ?: 1.0,
+                            secondAmount?.value?.toAmount() ?: 1.0,
                             secondPrice!!.value.int,
                             secondUnit?.value?.content ?: first.unit
                         )
