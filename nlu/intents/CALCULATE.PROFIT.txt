@@ -8,7 +8,7 @@ filler:
 slots:
     first_amount:
         source: $Amount1
-        type: Amount
+        type: YANDEX.NUMBER
     first_unit:
         source: $Unit1
         type: UnitName
@@ -17,7 +17,7 @@ slots:
         type: YANDEX.NUMBER
     second_amount:
         source: $Amount2
-        type: Amount
+        type: YANDEX.NUMBER
     second_unit:
         source: $Unit2
         type: UnitName
