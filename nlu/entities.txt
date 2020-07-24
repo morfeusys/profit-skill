@@ -9,6 +9,9 @@ entity Amount:
         0o33:
             %exact
             0 33
+        10:
+            %lemma
+            десяток
         12:
             %lemma
             дюжина
