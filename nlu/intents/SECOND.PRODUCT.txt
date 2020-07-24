@@ -7,7 +7,7 @@ filler:
 slots:
     second_amount:
         source: $Amount2
-        type: YANDEX.NUMBER
+        type: Amount
     second_unit:
         source: $Unit2
         type: UnitName
@@ -22,7 +22,7 @@ $right:
     $Amount2 $Unit2? (за|по) $Price2 $Currency
 
 $Amount2:
-    $YANDEX.NUMBER
+    $Amount | $YANDEX.NUMBER
 $Price2:
     $YANDEX.NUMBER
 $Unit2:
@@ -34,3 +34,5 @@ $Currency:
     %exact
     руб
     р
+$Name2:
+    .+

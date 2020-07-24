@@ -8,7 +8,7 @@ filler:
 slots:
     first_amount:
         source: $Amount1
-        type: YANDEX.NUMBER
+        type: Amount
     first_unit:
         source: $Unit1
         type: UnitName
@@ -17,7 +17,7 @@ slots:
         type: YANDEX.NUMBER
     second_amount:
         source: $Amount2
-        type: YANDEX.NUMBER
+        type: Amount
     second_unit:
         source: $Unit2
         type: UnitName
@@ -29,24 +29,26 @@ $WhatsBetter:
     что? выгоднее (приобрести | взять)?
 
 $left_PA:
-    $Price1 $Currency? за $Amount1? $Unit1
+    $Price1 $Currency? за $Amount1? $Unit1 $Name1?
+    $Price1 $Currency за $Amount1 $Unit1? $Name1?
 $left_AP:
-    $Amount1? $Unit1 за $Price1 $Currency?
+    $Amount1? $Unit1 $Name1? (за|по) $Price1 $Currency?
+    $Amount1 $Name1 (за|по) $Price1 $Currency?
 
 $right:
-    $Price2 $Currency? за $Amount2? $Unit2
-    $Amount2? $Unit2 за $Price2 $Currency?
+    $Price2 $Currency? за $Amount2? $Unit2 $Name2?
+    $Amount2? $Unit2 $Name2? (за|по) $Price2 $Currency?
 
 $right_PA:
-    $Price2 за $Amount2
+    $Price2 $Currency? за $Amount2 $Name2?
 
 $right_AP:
-    $Amount2 за $Price2
+    $Amount2 $Name2? (за|по) $Price2 $Currency?
 
 $Amount1:
-    $YANDEX.NUMBER
+    $Amount | $YANDEX.NUMBER
 $Amount2:
-    $YANDEX.NUMBER
+    $Amount | $YANDEX.NUMBER
 $Price1:
     $YANDEX.NUMBER
 $Price2:
@@ -63,3 +65,7 @@ $Currency:
     %exact
     руб
     р
+$Name1:
+    .+
+$Name2:
+    .+

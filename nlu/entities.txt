@@ -1,3 +1,18 @@
+entity Amount:
+    values:
+        0o5:
+            %exact
+            пол
+        1o5:
+            %lemma
+            полтора
+        0o33:
+            %exact
+            0 33
+        12:
+            %lemma
+            дюжина
+
 entity UnitName:
     values:
         u:
